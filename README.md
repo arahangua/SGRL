@@ -7,10 +7,6 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/semantic-graph-rl)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
 
-<img src="static/EAAC_knowledge_graph_lc_example.png" alt="Semantic Graph Reinforcement Learning" width="600"/>
-
-*EAAC example graph (from [here](https://github.com/arahangua/EAAC))*
-
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
 
 ## ✨ Features
@@ -58,6 +54,11 @@ Semantic graph reinforcement learning combines graph neural networks with reinfo
 1. **Graph Construction**: 
    - The initial knowledge graph is created using domain-specific data.
    - Nodes represent entities, and edges represent relationships between entities.
+
+   <img src="static/EAAC_knowledge_graph_lc_example.png" alt="Semantic Graph Reinforcement Learning" width="600"/>
+   
+   *EAAC example graph (from [here](https://github.com/arahangua/EAAC))*
+
 
 2. **Graph Embedding**:
    - The graph is passed through a heterogeneous graph neural network to generate node embeddings.
