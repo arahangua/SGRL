@@ -1,8 +1,9 @@
 import dgl
 import torch
 import torch.nn as nn
+import pytorch_lightning as pl
 
-class GraphEmbedding(nn.Module):
+class GraphEmbedding(pl.LightningModule):
     def __init__(self, in_feats, hidden_feats, out_feats):
         super().__init__()
         self.conv1 = dgl.nn.GraphConv(in_feats, hidden_feats)
@@ -14,7 +15,16 @@ class GraphEmbedding(nn.Module):
         h = self.conv2(g, h)
         return h
 
-class HeterogeneousGraphEmbedding(nn.Module):
+    def training_step(self, batch, batch_idx):
+        # Implement training step
+        pass
+
+    def configure_optimizers(self):
+        # Configure optimizer
+        optimizer = torch.optim.Adam(self.parameters(), lr=0.01)
+        return optimizer
+
+class HeterogeneousGraphEmbedding(pl.LightningModule):
     def __init__(self, in_feats_dict, hidden_feats, out_feats):
         super().__init__()
         self.conv1 = dgl.nn.HeteroGraphConv({
@@ -31,3 +41,12 @@ class HeterogeneousGraphEmbedding(nn.Module):
         h = {k: torch.relu(v) for k, v in h.items()}
         h = self.conv2(g, h)
         return h
+
+    def training_step(self, batch, batch_idx):
+        # Implement training step
+        pass
+
+    def configure_optimizers(self):
+        # Configure optimizer
+        optimizer = torch.optim.Adam(self.parameters(), lr=0.01)
+        return optimizer
