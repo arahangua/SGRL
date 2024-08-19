@@ -7,8 +7,9 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/semantic-graph-rl)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
 
-![Semantic Graph Reinforcement Learning](static/EAAC_knowledge_graph_lc_example.png)
-EAAC example graph (from [here](https://github.com/arahangua/EAAC))
+<img src="static/EAAC_knowledge_graph_lc_example.png" alt="Semantic Graph Reinforcement Learning" width="600"/>
+
+*EAAC example graph (from [here](https://github.com/arahangua/EAAC))*
 
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
 
