@@ -57,12 +57,12 @@ def create_initial_knowledge_graph(in_feats_dict: Dict[str, int]) -> Dict[str, t
         initial_graph[node_type] = torch.randn(10, feat_dim)  # Start with 10 nodes per type
     return initial_graph
 
-        # Log metrics
-        mlflow.log_metric("expressivity_score", expressivity_score)
-        for key, value in structure_metrics.items():
-            mlflow.log_metric(f"structure_{key}", value)
-        for key, value in rl_performance.items():
-            mlflow.log_metric(f"rl_{key}", value)
+# Log metrics
+mlflow.log_metric("expressivity_score", expressivity_score)
+for key, value in structure_metrics.items():
+    mlflow.log_metric(f"structure_{key}", value)
+for key, value in rl_performance.items():
+    mlflow.log_metric(f"rl_{key}", value)
 
         # Save models
         mlflow.pytorch.log_model(graph_embedding_model, "graph_embedding_model")

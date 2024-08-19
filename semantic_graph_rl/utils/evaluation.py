@@ -65,6 +65,11 @@ def get_llm_feedback(text: str) -> float:
     sentiment_score = (result['score'] + 1) / 2  # Assuming score is between -1 and 1
     return sentiment_score
 
+import torch
+from typing import Dict
+import numpy as np
+from semantic_graph_rl.models.lightning_rl_agent import LightningGraphRLAgent
+
 def evaluate_rl_performance(agent: LightningGraphRLAgent, num_steps: int = 1000) -> Dict[str, float]:
     total_reward = 0.0
     total_expressivity = 0.0
