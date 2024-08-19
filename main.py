@@ -1,11 +1,12 @@
 import mlflow
+import torch
 import numpy as np
-from semantic_graph_rl.data.graph_dataset import GraphDataset, create_heterogeneous_graph
-from semantic_graph_rl.models.graph_embeddings import HeterogeneousGraphEmbedding
-from semantic_graph_rl.models.rl_agent import GraphRLAgent, GraphRLPolicy
+from semantic_graph_rl.data.graph_dataset import GraphDataModule, create_heterogeneous_graph, generate_hetero_random_walk, concatenate_hetero_embeddings
+from semantic_graph_rl.models.graph_embeddings import HeterogeneousGraphEmbedding, MambaModule
+from semantic_graph_rl.models.lightning_rl_agent import LightningGraphRLPolicy, LightningGraphRLAgent
 from semantic_graph_rl.utils.nlp_utils import process_text, create_embeddings
 from semantic_graph_rl.utils.evaluation import evaluate_graph_expressivity, evaluate_graph_structure, evaluate_rl_performance
-from gym import Env
+import pytorch_lightning as pl
 
 def main():
     mlflow.set_experiment("semantic-graph-rl")
@@ -18,26 +19,33 @@ def main():
         in_feats_dict = {}  # This should be populated with actual input features
         hidden_feats = 64  # Example value, adjust as needed
         out_feats = 32  # Example value, adjust as needed
+        action_space = 10  # Example value, adjust based on your RL task
 
-        # Create graph dataset
-        graph_dataset = GraphDataset(graphs, labels)
+        # Create graph dataset and data module
+        data_module = GraphDataModule(graphs, labels)
 
         # Create graph embeddings
         graph_embedding_model = HeterogeneousGraphEmbedding(in_feats_dict, hidden_feats, out_feats)
+        mamba_module = MambaModule(out_feats, d_state=16, d_conv=4, expand=2)
 
-        # Create RL environment
-        env = Env()  # This should be your actual RL environment
+        # Create RL policy and agent
+        policy = LightningGraphRLPolicy(in_feats_dict, hidden_feats, out_feats, action_space)
+        rl_agent = LightningGraphRLAgent(policy, None)  # Replace None with your actual environment
 
-        # Create and train RL agent
-        rl_agent = GraphRLAgent(GraphRLPolicy, env)
-        rl_agent.learn(total_timesteps=100000)
+        # Train the agent
+        trainer = pl.Trainer(max_epochs=100, gpus=1 if torch.cuda.is_available() else 0)
+        trainer.fit(rl_agent, data_module)
 
         # Evaluation
         graph = graphs[0]  # Assuming we're evaluating the first graph
-        embeddings = np.random.rand(100, out_feats)  # Example embeddings, replace with actual embeddings
-        expressivity_score = evaluate_graph_expressivity(graph, embeddings)
+        embeddings = graph_embedding_model(graph, graph.ndata['feat'])
+        walks = generate_hetero_random_walk(graph)
+        concatenated_embeddings = concatenate_hetero_embeddings(graph, walks)
+        mamba_embeddings = mamba_module(concatenated_embeddings)
+
+        expressivity_score = evaluate_graph_expressivity(graph, mamba_embeddings)
         structure_metrics = evaluate_graph_structure(graph)
-        rl_performance = evaluate_rl_performance(rl_agent, env)
+        rl_performance = evaluate_rl_performance(rl_agent, None)  # Replace None with your actual environment
 
         # Log metrics
         mlflow.log_metric("expressivity_score", expressivity_score)
@@ -48,7 +56,8 @@ def main():
 
         # Save models
         mlflow.pytorch.log_model(graph_embedding_model, "graph_embedding_model")
-        mlflow.sklearn.log_model(rl_agent, "rl_agent")
+        mlflow.pytorch.log_model(mamba_module, "mamba_module")
+        mlflow.pytorch.log_model(rl_agent, "rl_agent")
 
 if __name__ == "__main__":
     main()
