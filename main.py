@@ -11,6 +11,7 @@ from semantic_graph_rl.utils.nlp_utils import process_text, create_embeddings
 from semantic_graph_rl.utils.evaluation import evaluate_graph_expressivity, evaluate_graph_structure, evaluate_rl_performance
 from semantic_graph_rl.utils.graph_utils import create_initial_knowledge_graph
 import pytorch_lightning as pl
+from ollama_llm.serve_model.py import serve_model
 
 @hydra.main(config_path=".", config_name="config")
 def main(cfg: DictConfig):
@@ -54,6 +55,12 @@ def main(cfg: DictConfig):
         expressivity_score = evaluate_graph_expressivity(graph, mamba_embeddings)
         structure_metrics = evaluate_graph_structure(graph)
         rl_performance = evaluate_rl_performance(rl_agent)
+
+        # Example usage of Ollama LLM Server
+        model_name = "ollama/llm-model"
+        input_text = "Evaluate the following graph structure."
+        llm_response = serve_model(model_name, input_text)
+        print(f"LLM Response: {llm_response}")
 
         # Log metrics
         mlflow.log_metric("expressivity_score", expressivity_score)
