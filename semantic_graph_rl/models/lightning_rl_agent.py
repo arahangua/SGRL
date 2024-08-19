@@ -55,17 +55,28 @@ class LightningGraphRLPolicy(pl.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=1e-3)
 
 class LightningGraphRLAgent(pl.LightningModule):
-    def __init__(self, policy: LightningGraphRLPolicy, env, **kwargs):
+    def __init__(self, policy: LightningGraphRLPolicy, initial_graph: Dict[str, torch.Tensor], **kwargs):
         super().__init__()
         self.policy = policy
-        self.env = env
+        self.knowledge_graph = initial_graph
 
     def training_step(self, batch, batch_idx):
-        return self.policy.training_step(batch, batch_idx)
+        action_logits, values = self.policy(self.knowledge_graph)
+        loss = self.policy.compute_loss(action_logits, values, batch)
+        self.log('train_loss', loss)
+        return loss
 
     def configure_optimizers(self):
         return self.policy.configure_optimizers()
 
+    def update_knowledge_graph(self, new_data: Dict[str, torch.Tensor]):
+        # Update the knowledge graph with new information
+        for node_type, data in new_data.items():
+            if node_type in self.knowledge_graph:
+                self.knowledge_graph[node_type] = torch.cat([self.knowledge_graph[node_type], data], dim=0)
+            else:
+                self.knowledge_graph[node_type] = data
+
     def train_dataloader(self):
-        # Implement a custom data loader that generates experiences from the environment
-        pass
+        # Implement a custom data loader that generates experiences from the knowledge graph
+        return DataLoader(GraphDataset(self.knowledge_graph), batch_size=32, shuffle=True)

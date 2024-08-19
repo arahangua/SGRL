@@ -65,46 +65,62 @@ def get_llm_feedback(text: str) -> float:
     sentiment_score = (result['score'] + 1) / 2  # Assuming score is between -1 and 1
     return sentiment_score
 
-def evaluate_rl_performance(agent, env, num_episodes: int = 100) -> Dict[str, float]:
+def evaluate_rl_performance(agent: LightningGraphRLAgent, num_steps: int = 1000) -> Dict[str, float]:
     total_reward = 0.0
     total_expressivity = 0.0
     total_llm_feedback = 0.0
 
-    for _ in range(num_episodes):
-        state = env.reset()
-        done = False
-        episode_reward = 0.0
+    for _ in range(num_steps):
+        # Get the current state of the knowledge graph
+        current_graph = agent.knowledge_graph
 
-        while not done:
-            action = agent.predict(state)
-            next_state, reward, done, info = env.step(action)
+        # Use the agent's policy to choose an action
+        action_logits, _ = agent.policy(current_graph)
+        action = torch.argmax(action_logits, dim=-1)
 
-            # Calculate graph expressivity
-            graph = env.get_graph()
-            embeddings = env.get_node_embeddings()
-            expressivity = evaluate_graph_expressivity(graph, embeddings)
+        # Simulate the environment step (this would be replaced with actual environment interaction)
+        new_data = simulate_environment_step(current_graph, action)
+        
+        # Update the agent's knowledge graph
+        agent.update_knowledge_graph(new_data)
 
-            # Generate subgraph text and get LLM feedback
-            subgraph_nodes = info.get('subgraph_nodes', np.array([]))
-            subgraph_text = generate_subgraph_text(graph, subgraph_nodes)
-            llm_feedback = get_llm_feedback(subgraph_text)
+        # Calculate graph expressivity
+        expressivity = evaluate_graph_expressivity(current_graph, agent.policy.graph_embedding(current_graph))
 
-            # Blend rewards
-            blended_reward = 0.4 * reward + 0.3 * expressivity + 0.3 * llm_feedback
-            episode_reward += blended_reward
+        # Generate subgraph text and get LLM feedback
+        subgraph_nodes = get_relevant_subgraph(current_graph, action)
+        subgraph_text = generate_subgraph_text(current_graph, subgraph_nodes)
+        llm_feedback = get_llm_feedback(subgraph_text)
 
-            total_expressivity += expressivity
-            total_llm_feedback += llm_feedback
-            state = next_state
+        # Calculate reward (this would be replaced with actual reward calculation)
+        reward = calculate_reward(current_graph, new_data, expressivity, llm_feedback)
 
-        total_reward += episode_reward
+        # Accumulate metrics
+        total_reward += reward
+        total_expressivity += expressivity
+        total_llm_feedback += llm_feedback
 
-    avg_reward = total_reward / num_episodes
-    avg_expressivity = total_expressivity / num_episodes
-    avg_llm_feedback = total_llm_feedback / num_episodes
+    avg_reward = total_reward / num_steps
+    avg_expressivity = total_expressivity / num_steps
+    avg_llm_feedback = total_llm_feedback / num_steps
 
     return {
         'avg_reward': avg_reward,
         'avg_expressivity': avg_expressivity,
         'avg_llm_feedback': avg_llm_feedback
     }
+
+def simulate_environment_step(current_graph: Dict[str, torch.Tensor], action: torch.Tensor) -> Dict[str, torch.Tensor]:
+    # Simulate environment step and return new data
+    # This is a placeholder and should be replaced with actual environment logic
+    return {'new_node_type': torch.randn(1, current_graph['node_type'].shape[1])}
+
+def calculate_reward(current_graph: Dict[str, torch.Tensor], new_data: Dict[str, torch.Tensor], expressivity: float, llm_feedback: float) -> float:
+    # Calculate reward based on the current graph, new data, expressivity, and LLM feedback
+    # This is a placeholder and should be replaced with actual reward calculation logic
+    return 0.4 * expressivity + 0.3 * llm_feedback + 0.3 * len(new_data)
+
+def get_relevant_subgraph(graph: Dict[str, torch.Tensor], action: torch.Tensor) -> np.ndarray:
+    # Get relevant subgraph based on the action
+    # This is a placeholder and should be replaced with actual subgraph selection logic
+    return np.random.choice(graph[list(graph.keys())[0]].shape[0], size=10, replace=False)

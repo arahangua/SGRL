@@ -28,24 +28,34 @@ def main():
         graph_embedding_model = HeterogeneousGraphEmbedding(in_feats_dict, hidden_feats, out_feats)
         mamba_module = MambaModule(out_feats, d_state=16, d_conv=4, expand=2)
 
+        # Create initial knowledge graph
+        initial_graph = create_initial_knowledge_graph(in_feats_dict)
+
         # Create RL policy and agent
         policy = LightningGraphRLPolicy(in_feats_dict, hidden_feats, out_feats, action_space)
-        rl_agent = LightningGraphRLAgent(policy, None)  # Replace None with your actual environment
+        rl_agent = LightningGraphRLAgent(policy, initial_graph)
 
         # Train the agent
         trainer = pl.Trainer(max_epochs=100, gpus=1 if torch.cuda.is_available() else 0)
         trainer.fit(rl_agent, data_module)
 
         # Evaluation
-        graph = graphs[0]  # Assuming we're evaluating the first graph
-        embeddings = graph_embedding_model(graph, graph.ndata['feat'])
+        graph = rl_agent.knowledge_graph
+        embeddings = graph_embedding_model(graph)
         walks = generate_hetero_random_walk(graph)
         concatenated_embeddings = concatenate_hetero_embeddings(graph, walks)
         mamba_embeddings = mamba_module(concatenated_embeddings)
 
         expressivity_score = evaluate_graph_expressivity(graph, mamba_embeddings)
         structure_metrics = evaluate_graph_structure(graph)
-        rl_performance = evaluate_rl_performance(rl_agent, None)  # Replace None with your actual environment
+        rl_performance = evaluate_rl_performance(rl_agent)
+
+def create_initial_knowledge_graph(in_feats_dict: Dict[str, int]) -> Dict[str, torch.Tensor]:
+    # Create an initial knowledge graph based on the input features
+    initial_graph = {}
+    for node_type, feat_dim in in_feats_dict.items():
+        initial_graph[node_type] = torch.randn(10, feat_dim)  # Start with 10 nodes per type
+    return initial_graph
 
         # Log metrics
         mlflow.log_metric("expressivity_score", expressivity_score)
