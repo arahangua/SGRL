@@ -50,6 +50,54 @@ def apply_random_walk(graph: dgl.DGLGraph, walk_length: int, num_walks: int) -> 
     # Implementation for random walk
     pass
 
+def generate_concatenated_random_walk(graph: dgl.DGLGraph, node_embeddings: torch.Tensor, edge_embeddings: torch.Tensor, walk_length: int = 2) -> torch.Tensor:
+    """
+    Generate concatenated random walk representations of node and edge embeddings.
+    
+    Args:
+        graph (dgl.DGLGraph): The input graph.
+        node_embeddings (torch.Tensor): Node embeddings of shape (num_nodes, embedding_dim).
+        edge_embeddings (torch.Tensor): Edge embeddings of shape (num_edges, embedding_dim).
+        walk_length (int): Length of the random walk (default: 2).
+    
+    Returns:
+        torch.Tensor: Concatenated random walk embeddings of shape (num_nodes, (2*walk_length+1) * embedding_dim).
+    """
+    num_nodes = graph.number_of_nodes()
+    embedding_dim = node_embeddings.shape[1]
+    result_dim = (2 * walk_length + 1) * embedding_dim
+    
+    result = torch.zeros((num_nodes, result_dim), device=node_embeddings.device)
+    
+    for start_node in range(num_nodes):
+        current_node = start_node
+        walk_embeddings = [node_embeddings[current_node]]
+        
+        for _ in range(walk_length):
+            out_edges = graph.out_edges(current_node, form='all')
+            if len(out_edges[0]) == 0:
+                break
+            
+            # Randomly select an outgoing edge
+            edge_index = torch.randint(0, len(out_edges[0]), (1,)).item()
+            edge_id = out_edges[2][edge_index]
+            next_node = out_edges[1][edge_index].item()
+            
+            # Add edge and next node embeddings
+            walk_embeddings.append(edge_embeddings[edge_id])
+            walk_embeddings.append(node_embeddings[next_node])
+            
+            current_node = next_node
+        
+        # Pad the walk if it's shorter than expected
+        while len(walk_embeddings) < 2 * walk_length + 1:
+            walk_embeddings.append(torch.zeros_like(node_embeddings[0]))
+        
+        # Concatenate the embeddings
+        result[start_node] = torch.cat(walk_embeddings[:2*walk_length+1], dim=0)
+    
+    return result
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
