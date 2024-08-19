@@ -7,14 +7,14 @@ from diagrams.onprem.compute import Server
 from diagrams.onprem.client import Users
 from diagrams.onprem.network import Internet
 from diagrams.onprem.compute import Server
-from diagrams.onprem.database import SQL
+from diagrams.onprem.database import PostgreSQL
 
 with Diagram("Semantic Graph Reinforcement Learning Architecture", show=False, direction="LR"):
     users = Users("Users")                                                                                                                                                                      
     internet = Internet("Internet")                                                                                                                                                             
                                                                                                                                                                                                  
     with Cluster("Graph Construction"):                                                                                                                                                         
-        graph_db = SQL("Knowledge Graph DB")                                                                                                                                                    
+        graph_db = PostgreSQL("Knowledge Graph DB")                                                                                                                                                    
         graph_construction = Server("Graph\nConstruction\nService")                                                                                                                             
                                                                                                                                                                                                 
     with Cluster("Graph Embedding"):                                                                                                                                                            
