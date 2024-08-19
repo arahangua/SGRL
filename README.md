@@ -7,7 +7,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/semantic-graph-rl)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
 
-![Semantic Graph Reinforcement Learning](https://via.placeholder.com/800x200.png?text=Semantic+Graph+Reinforcement+Learning)
+![Semantic Graph Reinforcement Learning](https://www.example.com/path/to/your/image.png)
 
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
 
