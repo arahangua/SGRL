@@ -7,6 +7,7 @@ from semantic_graph_rl.models.graph_embeddings import HeterogeneousGraphEmbeddin
 from semantic_graph_rl.models.lightning_rl_agent import LightningGraphRLPolicy, LightningGraphRLAgent
 from semantic_graph_rl.utils.nlp_utils import process_text, create_embeddings
 from semantic_graph_rl.utils.evaluation import evaluate_graph_expressivity, evaluate_graph_structure, evaluate_rl_performance
+from semantic_graph_rl.utils.graph_utils import create_initial_knowledge_graph
 import pytorch_lightning as pl
 
 def main():
@@ -63,12 +64,6 @@ def main():
         mlflow.pytorch.log_model(mamba_module, "mamba_module")
         mlflow.pytorch.log_model(rl_agent, "rl_agent")
 
-def create_initial_knowledge_graph(in_feats_dict: Dict[str, int]) -> Dict[str, torch.Tensor]:
-    # Create an initial knowledge graph based on the input features
-    initial_graph = {}
-    for node_type, feat_dim in in_feats_dict.items():
-        initial_graph[node_type] = torch.randn(10, feat_dim)  # Start with 10 nodes per type
-    return initial_graph
 
 if __name__ == "__main__":
     main()
