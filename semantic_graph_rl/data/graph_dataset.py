@@ -4,6 +4,8 @@ import numpy as np
 import pytorch_lightning as pl
 from typing import List, Dict, Optional
 from torch.utils.data import DataLoader, random_split
+from torch_geometric.data import HeteroData
+from torch_geometric.transforms import RandomWalk
 
 class GraphDataset(torch.utils.data.Dataset):
     def __init__(self, graphs: List[dgl.DGLGraph], labels: List[int]):
@@ -97,6 +99,51 @@ def generate_concatenated_random_walk(graph: dgl.DGLGraph, node_embeddings: torc
         result[start_node] = torch.cat(walk_embeddings[:2*walk_length+1], dim=0)
     
     return result
+
+def generate_hetero_random_walk(hetero_graph: HeteroData, walk_length: int = 2) -> Dict[str, torch.Tensor]:
+    """
+    Generate random walks for a heterogeneous graph using PyTorch Geometric.
+    
+    Args:
+        hetero_graph (HeteroData): The input heterogeneous graph.
+        walk_length (int): Length of the random walk (default: 2).
+    
+    Returns:
+        Dict[str, torch.Tensor]: A dictionary containing random walks for each node type.
+    """
+    random_walk = RandomWalk(walk_length=walk_length)
+    walks = {}
+    
+    for node_type in hetero_graph.node_types:
+        # Generate random walks for each node type
+        walks[node_type] = random_walk(hetero_graph[node_type].x, hetero_graph[node_type].edge_index)
+    
+    return walks
+
+def concatenate_hetero_embeddings(hetero_graph: HeteroData, walks: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    """
+    Concatenate embeddings based on the random walks for a heterogeneous graph.
+    
+    Args:
+        hetero_graph (HeteroData): The input heterogeneous graph.
+        walks (Dict[str, torch.Tensor]): Random walks for each node type.
+    
+    Returns:
+        Dict[str, torch.Tensor]: A dictionary containing concatenated embeddings for each node type.
+    """
+    concatenated_embeddings = {}
+    
+    for node_type in hetero_graph.node_types:
+        node_embeddings = hetero_graph[node_type].x
+        walk = walks[node_type]
+        
+        # Gather embeddings along the walk
+        gathered_embeddings = node_embeddings[walk]
+        
+        # Flatten and concatenate
+        concatenated_embeddings[node_type] = gathered_embeddings.view(gathered_embeddings.size(0), -1)
+    
+    return concatenated_embeddings
 
 import torch
 import torch.nn as nn
