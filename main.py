@@ -64,10 +64,10 @@ for key, value in structure_metrics.items():
 for key, value in rl_performance.items():
     mlflow.log_metric(f"rl_{key}", value)
 
-        # Save models
-        mlflow.pytorch.log_model(graph_embedding_model, "graph_embedding_model")
-        mlflow.pytorch.log_model(mamba_module, "mamba_module")
-        mlflow.pytorch.log_model(rl_agent, "rl_agent")
+# Save models
+mlflow.pytorch.log_model(graph_embedding_model, "graph_embedding_model")
+mlflow.pytorch.log_model(mamba_module, "mamba_module")
+mlflow.pytorch.log_model(rl_agent, "rl_agent")
 
 if __name__ == "__main__":
     main()

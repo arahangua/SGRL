@@ -80,6 +80,6 @@ class LightningGraphRLAgent(pl.LightningModule):
 from torch.utils.data import DataLoader
 from semantic_graph_rl.data.graph_dataset import GraphDataset
 
-    def train_dataloader(self):
-        # Implement a custom data loader that generates experiences from the knowledge graph
-        return DataLoader(GraphDataset(self.knowledge_graph), batch_size=32, shuffle=True)
+def train_dataloader(self):
+    # Implement a custom data loader that generates experiences from the knowledge graph
+    return DataLoader(GraphDataset(self.knowledge_graph), batch_size=32, shuffle=True)
