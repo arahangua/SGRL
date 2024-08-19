@@ -72,11 +72,6 @@ To run the hooks on all files, use:
 pre-commit run --all-files
 ```
 
-[![Pre-commit](https://img.shields.io/badge/Pre--commit-Enabled-blue?logo=pre-commit)](https://pre-commit.com/)
-[![Black](https://img.shields.io/badge/Code%20Style-Black-000000?logo=black)](https://github.com/psf/black)
-[![Isort](https://img.shields.io/badge/Imports-Isort-ef8336?logo=isort)](https://pycqa.github.io/isort/)
-[![Ruff](https://img.shields.io/badge/Linter-Ruff-000000?logo=ruff)](https://github.com/charliermarsh/ruff)
-
 To run tests:
 
 ```sh
