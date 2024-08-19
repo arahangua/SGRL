@@ -8,10 +8,29 @@ from typing import Dict
 from transformers import pipeline
 from sklearn.metrics import silhouette_score
 
-def evaluate_graph_expressivity(graph: dgl.DGLGraph, embeddings: np.ndarray) -> float:
-    # Evaluate graph expressivity using silhouette score
-    silhouette_avg = silhouette_score(embeddings, graph.ndata['label'].numpy())
-    return silhouette_avg
+def evaluate_graph_expressivity(graph: dgl.DGLGraph, embeddings: Dict[str, np.ndarray]) -> float:
+    # Evaluate graph expressivity using MAG-GNN approach
+    total_score = 0.0
+    num_node_types = len(embeddings)
+
+    for node_type, node_embeddings in embeddings.items():
+        # Calculate intra-type similarity
+        intra_sim = np.mean(np.matmul(node_embeddings, node_embeddings.T))
+        
+        # Calculate inter-type similarity
+        inter_sim = 0.0
+        for other_type, other_embeddings in embeddings.items():
+            if other_type != node_type:
+                inter_sim += np.mean(np.matmul(node_embeddings, other_embeddings.T))
+        inter_sim /= (num_node_types - 1)  # Average over other node types
+        
+        # Calculate expressivity score for this node type
+        type_score = intra_sim - inter_sim
+        total_score += type_score
+
+    # Average score across all node types
+    avg_expressivity = total_score / num_node_types
+    return avg_expressivity
 
 def evaluate_graph_structure(graph: dgl.DGLGraph) -> Dict[str, float]:
     # Evaluate graph structure using various metrics
