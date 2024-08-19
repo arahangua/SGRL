@@ -75,7 +75,7 @@ Semantic graph reinforcement learning combines graph neural networks with reinfo
    - The performance of the agent is evaluated based on its ability to achieve the desired outcomes.
    - Metrics such as graph expressivity and structure are used to assess the quality of the learned policy.
 
-![Semantic Graph Reinforcement Learning Schematic](static/semantic_graph_rl_schematic.png)
+![Semantic Graph Reinforcement Learning Architecture](static/semantic_graph_rl_architecture.png)
 
 ## 🧑‍💻 Development
 
