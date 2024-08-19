@@ -50,6 +50,61 @@ def apply_random_walk(graph: dgl.DGLGraph, walk_length: int, num_walks: int) -> 
     # Implementation for random walk
     pass
 
-def apply_mamba(graph: dgl.DGLGraph) -> np.ndarray:
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class MambaModule(nn.Module):
+    def __init__(self, d_model, d_state, d_conv, expand):
+        super().__init__()
+        self.d_model = d_model
+        self.d_state = d_state
+        self.d_conv = d_conv
+        self.expand = expand
+        
+        self.in_proj = nn.Linear(d_model, d_model * expand)
+        self.conv = nn.Conv1d(d_model * expand, d_model * expand, kernel_size=d_conv, padding=d_conv-1, groups=d_model * expand)
+        self.activation = nn.SiLU()
+        self.out_proj = nn.Linear(d_model * expand, d_model)
+        
+        # S4D-like state space parameters
+        self.A = nn.Parameter(torch.randn(self.d_state, self.d_state))
+        self.B = nn.Parameter(torch.randn(self.d_state, 1))
+        self.C = nn.Parameter(torch.randn(1, self.d_state))
+        self.D = nn.Parameter(torch.randn(1))
+        
+    def forward(self, x):
+        # x shape: (batch_size, seq_len, d_model)
+        batch_size, seq_len, _ = x.shape
+        
+        # Input projection and reshape
+        x = self.in_proj(x)  # (batch_size, seq_len, d_model * expand)
+        x = x.transpose(1, 2)  # (batch_size, d_model * expand, seq_len)
+        
+        # Convolution
+        x = self.conv(x)[:, :, :seq_len]  # (batch_size, d_model * expand, seq_len)
+        x = x.transpose(1, 2)  # (batch_size, seq_len, d_model * expand)
+        
+        # Apply S4D-like state space
+        u = x.unbind(1)
+        h = torch.zeros(batch_size, self.d_state, device=x.device)
+        outputs = []
+        
+        for u_t in u:
+            h = torch.tanh(self.A) @ h + self.B @ u_t.unsqueeze(-1)
+            y_t = self.C @ h + self.D * u_t
+            outputs.append(y_t)
+        
+        x = torch.stack(outputs, dim=1)
+        
+        # Activation and output projection
+        x = self.activation(x)
+        x = self.out_proj(x)
+        
+        return x
+
+def apply_mamba(embeddings: torch.Tensor, d_state: int = 16, d_conv: int = 4, expand: int = 2) -> torch.Tensor:
     # Implementation for Mamba algorithm
-    pass
+    d_model = embeddings.shape[-1]
+    mamba = MambaModule(d_model, d_state, d_conv, expand)
+    return mamba(embeddings)
