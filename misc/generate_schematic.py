@@ -1,5 +1,5 @@
 from diagrams import Diagram, Cluster, Edge
-from diagrams.custom import Custom
+from diagrams.aws.database import RDS
 from diagrams.aws.compute import EC2
 from diagrams.aws.database import RDS
 from diagrams.aws.ml import Sagemaker as ML
@@ -14,7 +14,7 @@ with Diagram("Semantic Graph Reinforcement Learning Architecture", show=False, d
     internet = Internet("Internet")                                                                                                                                                             
                                                                                                                                                                                                  
     with Cluster("Graph Construction"):                                                                                                                                                         
-        graph_db = Custom("Knowledge Graph DB", "./path/to/graph_db_image.png")                                                                                                                                                    
+        graph_db = RDS("Knowledge Graph DB")                                                                                                                                                    
         graph_construction = Server("Graph\nConstruction\nService")                                                                                                                             
                                                                                                                                                                                                 
     with Cluster("Graph Embedding"):                                                                                                                                                            
