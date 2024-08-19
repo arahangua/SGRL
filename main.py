@@ -1,6 +1,7 @@
 import mlflow
 import torch
 import numpy as np
+from typing import Dict
 from semantic_graph_rl.data.graph_dataset import GraphDataModule, create_heterogeneous_graph, generate_hetero_random_walk, concatenate_hetero_embeddings
 from semantic_graph_rl.models.graph_embeddings import HeterogeneousGraphEmbedding, MambaModule
 from semantic_graph_rl.models.lightning_rl_agent import LightningGraphRLPolicy, LightningGraphRLAgent
@@ -50,24 +51,24 @@ def main():
         structure_metrics = evaluate_graph_structure(graph)
         rl_performance = evaluate_rl_performance(rl_agent)
 
+        # Log metrics
+        mlflow.log_metric("expressivity_score", expressivity_score)
+        for key, value in structure_metrics.items():
+            mlflow.log_metric(f"structure_{key}", value)
+        for key, value in rl_performance.items():
+            mlflow.log_metric(f"rl_{key}", value)
+
+        # Save models
+        mlflow.pytorch.log_model(graph_embedding_model, "graph_embedding_model")
+        mlflow.pytorch.log_model(mamba_module, "mamba_module")
+        mlflow.pytorch.log_model(rl_agent, "rl_agent")
+
 def create_initial_knowledge_graph(in_feats_dict: Dict[str, int]) -> Dict[str, torch.Tensor]:
     # Create an initial knowledge graph based on the input features
     initial_graph = {}
     for node_type, feat_dim in in_feats_dict.items():
         initial_graph[node_type] = torch.randn(10, feat_dim)  # Start with 10 nodes per type
     return initial_graph
-
-# Log metrics
-mlflow.log_metric("expressivity_score", expressivity_score)
-for key, value in structure_metrics.items():
-    mlflow.log_metric(f"structure_{key}", value)
-for key, value in rl_performance.items():
-    mlflow.log_metric(f"rl_{key}", value)
-
-# Save models
-mlflow.pytorch.log_model(graph_embedding_model, "graph_embedding_model")
-mlflow.pytorch.log_model(mamba_module, "mamba_module")
-mlflow.pytorch.log_model(rl_agent, "rl_agent")
 
 if __name__ == "__main__":
     main()
