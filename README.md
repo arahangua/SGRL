@@ -1,5 +1,14 @@
 # 🌐 Semantic Graph Reinforcement Learning Project
 
+[![Pre-commit](https://img.shields.io/badge/Pre--commit-Enabled-blue?logo=pre-commit)](https://pre-commit.com/)
+[![Black](https://img.shields.io/badge/Code%20Style-Black-000000?logo=black)](https://github.com/psf/black)
+[![Isort](https://img.shields.io/badge/Imports-Isort-ef8336?logo=isort)](https://pycqa.github.io/isort/)
+[![Ruff](https://img.shields.io/badge/Linter-Ruff-000000?logo=ruff)](https://github.com/charliermarsh/ruff)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/semantic-graph-rl)
+[![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
+
+![Semantic Graph Reinforcement Learning](https://via.placeholder.com/800x200.png?text=Semantic+Graph+Reinforcement+Learning)
+
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
 
 ## ✨ Features
