@@ -6,6 +6,7 @@ from diagrams.aws.ml import Sagemaker
 from diagrams.onprem.compute import Server
 from diagrams.onprem.client import Users
 from diagrams.onprem.network import Internet
+from diagrams.onprem.database import SQL
 
 with Diagram("Semantic Graph Reinforcement Learning Architecture", show=False, direction="LR"):
     users = Users("Users")                                                                                                                                                                      
