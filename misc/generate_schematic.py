@@ -2,10 +2,10 @@ from diagrams import Diagram, Cluster, Edge
 from diagrams.custom import Custom
 from diagrams.aws.compute import EC2
 from diagrams.aws.database import RDS
-from diagrams.aws.ml import Sagemaker
+from diagrams.aws.ml import Sagemaker as ML
 from diagrams.onprem.compute import Server
 from diagrams.onprem.client import Users
-from diagrams.onprem.network import Internet
+from diagrams.onprem.network import Internet, Rack
 from diagrams.onprem.database import SQL
 
 with Diagram("Semantic Graph Reinforcement Learning Architecture", show=False, direction="LR"):
