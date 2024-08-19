@@ -1,5 +1,3 @@
-# EAAC-GCO
-Graph combinatorial optimization for EAAC-like coordination
 # Semantic Graph Reinforcement Learning Project
 
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
@@ -68,4 +66,4 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
