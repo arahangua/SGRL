@@ -31,18 +31,27 @@ class LightningGraphRLPolicy(pl.LightningModule, ActorCriticPolicy):
     def training_step(self, batch, batch_idx):
         # Implement PPO training step
         # This is a simplified version and may need to be adapted based on your specific requirements
-        obs, actions, rewards, dones, log_probs, values = batch
+        obs, actions, rewards, dones, old_log_probs, old_values = batch
         
         new_log_probs, new_values = self(obs)
         
+        # Calculate advantages
+        advantages = self.compute_advantages(rewards, old_values, dones)
+        
         # Calculate PPO losses
-        policy_loss = self.compute_policy_loss(new_log_probs, log_probs, advantages)
+        policy_loss = self.compute_policy_loss(new_log_probs, old_log_probs, advantages)
         value_loss = self.compute_value_loss(new_values, rewards)
         
         loss = policy_loss + 0.5 * value_loss
         
         self.log('train_loss', loss)
         return loss
+
+    def compute_advantages(self, rewards, values, dones):
+        # Implement advantage calculation (e.g., GAE)
+        # This is a placeholder implementation and should be replaced with actual GAE calculation
+        advantages = rewards - values
+        return advantages
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
