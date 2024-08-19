@@ -5,7 +5,8 @@ from diagrams.aws.database import RDS
 from diagrams.aws.ml import Sagemaker as ML
 from diagrams.onprem.compute import Server
 from diagrams.onprem.client import Users
-from diagrams.onprem.network import Internet, Rack
+from diagrams.onprem.network import Internet
+from diagrams.onprem.compute import Server
 from diagrams.onprem.database import SQL
 
 with Diagram("Semantic Graph Reinforcement Learning Architecture", show=False, direction="LR"):
@@ -23,7 +24,7 @@ with Diagram("Semantic Graph Reinforcement Learning Architecture", show=False, d
         policy_learning = ML("Policy\nLearning\nModel")                                                                                                                                         
                                                                                                                                                                                                 
     with Cluster("Environment Interaction"):                                                                                                                                                    
-        env_interaction = Rack("Environment\nInteraction\nService")                                                                                                                             
+        env_interaction = Server("Environment\nInteraction\nService")                                                                                                                             
                                                                                                                                                                                                 
     with Cluster("Evaluation"):                                                                                                                                                                 
         evaluation = Server("Evaluation\nService")                                                                                                                                              
