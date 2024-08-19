@@ -1,3 +1,5 @@
+import shutil
+import sys
 from diagrams import Diagram, Cluster, Edge
 from diagrams.custom import Custom
 from diagrams.aws.compute import EC2
@@ -6,6 +8,11 @@ from diagrams.aws.ml import Sagemaker
 from diagrams.onprem.compute import Server
 from diagrams.onprem.client import Users
 from diagrams.onprem.network import Internet
+
+# Check if Graphviz is installed
+if not shutil.which("dot"):
+    print("Error: Graphviz is not installed or not found in PATH.", file=sys.stderr)
+    sys.exit(1)
 
 with Diagram("Semantic Graph Reinforcement Learning Architecture", show=False, direction="LR"):
     users = Users("Users")
