@@ -1,4 +1,4 @@
-# 🌐 Semantic Graph Reinforcement Learning Project
+# 🌐 Semantic (Heterogeneous) Graph Reinforcement Learning
 
 [![Pre-commit](https://img.shields.io/badge/Pre--commit-Enabled-blue?logo=pre-commit)](https://pre-commit.com/)
 [![Black](https://img.shields.io/badge/Code%20Style-Black-000000?logo=black)](https://github.com/psf/black)
@@ -7,7 +7,8 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/semantic-graph-rl)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
 
-![Semantic Graph Reinforcement Learning](https://www.example.com/path/to/your/image.png)
+![Semantic Graph Reinforcement Learning](static/EAAC_knowledge_graph_lc_example.png)
+EAAC example graph (from [here](https://github.com/arahangua/EAAC))
 
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
 
@@ -100,6 +101,3 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## 📜 License
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
-
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/semantic-graph-rl)
-[![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
