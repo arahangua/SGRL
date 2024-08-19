@@ -42,6 +42,30 @@ python main.py
 
 ## 🧑‍💻 Development
 
+### Pre-commit Hooks
+
+This project uses `pre-commit` to manage pre-commit hooks for code formatting and linting. The following tools are integrated:
+- `black` for code formatting
+- `isort` for import sorting
+- `ruff` for linting
+
+To set up pre-commit hooks, run:
+
+```sh
+pre-commit install
+```
+
+To run the hooks on all files, use:
+
+```sh
+pre-commit run --all-files
+```
+
+[![Pre-commit](https://img.shields.io/badge/Pre--commit-Enabled-blue?logo=pre-commit)](https://pre-commit.com/)
+[![Black](https://img.shields.io/badge/Code%20Style-Black-000000?logo=black)](https://github.com/psf/black)
+[![Isort](https://img.shields.io/badge/Imports-Isort-ef8336?logo=isort)](https://pycqa.github.io/isort/)
+[![Ruff](https://img.shields.io/badge/Linter-Ruff-000000?logo=ruff)](https://github.com/charliermarsh/ruff)
+
 To run tests:
 
 ```sh
