@@ -9,6 +9,8 @@
 
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
 
+**Note: 21.08.24 This project is a work in progress. Not functional yet.**
+
 ## ✨ Features
 
 - 🌟 Heterogeneous Graph Neural Networks
