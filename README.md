@@ -7,11 +7,9 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/semantic-graph-rl)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
 
-<img src="static/EAAC_knowledge_graph_lc_example.png" alt="Semantic Graph Reinforcement Learning" width="600"/>
-
-*EAAC example graph (from [here](https://github.com/arahangua/EAAC))*
-
 This project implements a semantic graph reinforcement learning system using heterogeneous graph neural networks and the Mamba architecture.
+
+**Note: 21.08.24 This project is a work in progress. Not functional yet.**
 
 ## ✨ Features
 
@@ -50,6 +48,37 @@ To run the main script:
 ```sh
 python main.py
 ```
+
+## 🧩 How It Works
+
+Semantic graph reinforcement learning combines graph neural networks with reinforcement learning to enable intelligent decision-making on graph-structured data. Below is a high-level overview of the process:
+
+1. **Graph Construction**: 
+   - The initial knowledge graph is created using domain-specific data.
+   - Nodes represent entities, and edges represent relationships between entities.
+
+   <img src="static/EAAC_knowledge_graph_lc_example.png" alt="Semantic Graph Reinforcement Learning" width="600"/>
+   
+   *EAAC example graph (from [here](https://github.com/arahangua/EAAC))*
+
+
+2. **Graph Embedding**:
+   - The graph is passed through a heterogeneous graph neural network to generate node embeddings.
+   - These embeddings capture the structural and semantic information of the graph.
+
+3. **Policy Learning**:
+   - A reinforcement learning agent uses the node embeddings to make decisions.
+   - The agent's policy is trained to maximize a reward signal, which is based on the task-specific objectives.
+
+4. **Environment Interaction**:
+   - The agent interacts with the environment by taking actions that modify the graph.
+   - The environment provides feedback in the form of rewards, which guide the agent's learning process.
+
+5. **Evaluation**:
+   - The performance of the agent is evaluated based on its ability to achieve the desired outcomes.
+   - Metrics such as graph expressivity and structure are used to assess the quality of the learned policy.
+
+![Semantic Graph Reinforcement Learning Architecture](static/semantic_graph_rl_architecture.png)
 
 ## 🧑‍💻 Development
 

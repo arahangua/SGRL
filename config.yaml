@@ -1,0 +1,20 @@
+defaults:
+  - _self_
+
+experiment:
+  name: "semantic-graph-rl"
+  max_epochs: 100
+  gpus: 1
+
+data:
+  graphs: []
+  labels: []
+  in_feats_dict: {}
+  hidden_feats: 64
+  out_feats: 32
+  action_space: 10
+
+mamba:
+  d_state: 16
+  d_conv: 4
+  expand: 2
